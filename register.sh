@@ -17,4 +17,5 @@ while true; do
   echo "delete from registration_tokens where token='$token'" | sqlite3 tokens.db
   ((tokens_count -= 1))
   echo -n "$REGISTER_URL?uid=$uid&token=$token&hmac=$hmac" | qrencode -o qr.png
+  timeout --foreground 8 fbi -a qr.png > /dev/null 2>&1
 done
