@@ -16,7 +16,6 @@ main(int argc, const char *argv[])
   if (context == NULL)
     exit(EXIT_FAILURE);
 
-  // Display libnfc version
   (void)argc;
 
   // Open, using the first available NFC device which can be in order of selection:
