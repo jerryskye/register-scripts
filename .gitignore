@@ -1,3 +1,4 @@
 *.db
 qr.png
 read_uid
+*.log
