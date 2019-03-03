@@ -1,6 +1,11 @@
 #!/bin/bash
 
-REGISTER_URL='http://192.168.0.100:3000/users/sign_up'
+if [ -z "$WEBAPP_URL" ]; then
+  echo 'Invalid WEBAPP_URL variable'
+  exit 1
+fi
+
+REGISTER_URL="$WEBAPP_URL/users/sign_up"
 SECRET=`echo 'select secret from secret' | sqlite3 tokens.db`
 JWT_HEADER=`echo -n '{"typ": "JWT", "alg": "HS256"}' | base64 -w 0`
 

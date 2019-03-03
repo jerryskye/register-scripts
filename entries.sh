@@ -1,6 +1,11 @@
 #!/bin/bash
 
-API_URL="http://192.168.0.100:3000/entries.json"
+if [ -z "$WEBAPP_URL" ]; then
+  echo 'Invalid WEBAPP_URL variable'
+  exit 1
+fi
+
+ENTRIES_URL="$WEBAPP_URL/entries.json"
 SECRET=`echo 'select secret from secret' | sqlite3 tokens.db`
 DEVICE_ID=`echo 'select device_id from secret' | sqlite3 tokens.db`
 JWT_HEADER=`echo -n '{"typ": "JWT", "alg": "HS256"}' | base64 -w 0`
@@ -13,6 +18,6 @@ while true; do
   payload=`echo -n "{\"exp\": $exp, \"device_id\": \"$DEVICE_ID\"}" | base64 -w 0`
   signature=`echo -n "$JWT_HEADER.$payload" | hmac256 --binary "$SECRET" | base64 -w 0`
 
-  curl -s -H 'Content-Type: application/json' -H 'Accept: application/json' -H "Authorization: Bearer $JWT_HEADER.$payload.$signature" -d "{\"uid\": \"$uid\"}" "$API_URL" >> $LOGFILE
+  curl -s -H 'Content-Type: application/json' -H 'Accept: application/json' -H "Authorization: Bearer $JWT_HEADER.$payload.$signature" -d "{\"uid\": \"$uid\"}" "$ENTRIES_URL" >> $LOGFILE
   echo >> $LOGFILE
 done
