@@ -15,9 +15,9 @@ while true; do
   uid=`./read_uid`
   [ $? -ne 0 ] && echo "[`date`] Failed to read your card. Please try again or contact the system administrator if the problem persists." && continue
   exp="$((`date +%s` + 5))"
-  payload=`echo -n "{\"exp\": $exp, \"device_id\": \"$DEVICE_ID\"}" | base64 -w 0`
+  payload=`echo -n "{\"exp\": $exp}" | base64 -w 0`
   signature=`echo -n "$JWT_HEADER.$payload" | hmac256 --binary "$SECRET" | base64 -w 0`
 
-  curl -s -H 'Content-Type: application/json' -H 'Accept: application/json' -H "Authorization: Bearer $JWT_HEADER.$payload.$signature" -d "{\"uid\": \"$uid\"}" "$ENTRIES_URL" >> $LOGFILE
+  curl -s -H 'Content-Type: application/json' -H 'Accept: application/json' -H "Authorization: Bearer $JWT_HEADER.$payload.$signature" -d "{\"uid\": \"$uid\", \"device_id\": \"$DEVICE_ID\"}" "$ENTRIES_URL" >> $LOGFILE
   echo >> $LOGFILE
 done
